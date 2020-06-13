@@ -1,6 +1,6 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
+#include stdio.h
+#include stdlib.h
 #include "y.tab.h"
 #define YYDEBUG 1
 extern int yylex(void);
@@ -8,334 +8,243 @@ extern char *yytext;
 extern FILE *yyin;
 extern int yylineno;
 %}
-        /*TOKENS TERMINALES*/
+%token EXC
+%token DOCTYPE
+%token HTML
+%token LANG
+%token IGUAL
+%token HEAD
+%token META
+%token CHARSET
+%token UTF
+%token TITLE
+%token SECTION
+%token DIV
+%token BODY
+%token P
+%token H1
+%token H2
+%token H3
+%token H4
+%token H5
+%token H6
+%token EM
+%token BR
+%token HR
+%token STRONG
+%token UL
+%token OL
+%token LI
+%token TABLE
+%token TR
+%token TD
+%token TH
+%token CAPTION
+%token THEAD
+%token TFOOT
+%token TBODY
+%token A
+%token LA
+%token LC
+%token HTTP
+%token HTPS
+%token FTP
+%token FTPS
+%token SLASH
+%token MARK
+%token HASH
+%token COMILLAS
+%token ANCHO
+%token ALTO
+%token CLASS
+%token NAME
+%token JPG
+%token DESCRIPTION
+%token CONTENT
+%token DP
+%token KEYWORDS
+%token SOURCE
+%token ALTE
+%token AUTHOR
+%token ID
 
-%token <!DOCTYPE html>
-%token <html lang=es>
-%token <head>
-%token </head>
-%token <meta charset=UTF-8>
-%token <title>
-%token </title>
-%token <section>
-/*%token <section*/
-%token </section>
-%token <div>
-/*%token <div*/
-%token </div>
-%token <body>
-%token </body>
-%token <html>
-%token </html>
-%token <p>
-/*%token <p*/
-%token <p/>
-%token <h1>
-%token <h2>
-%token <h3>
-%token <h4>
-%token <h5>
-%token <h6>
-%token </h1>
-%token </h2>
-%token </h3>
-%token </h4>
-%token </h5>
-%token </h6>
-%token <em>
-/*%token <em*/
-%token </em>
-%token <br>
-/*%token <br*/
-%token <hr>
-/*%token <hr*/
-%token <strong>
-/*%token <strong*/
-%token </strong>
-%token <ul>
-/*%token <ul*/
-%token </ul>
-%token <ol>
-%token </ol>
-%token <li>
-/*%token <li*/
-%token </li>
-%token <table>
-%token </table>
-%token <tr>
-%token </tr>
-%token <td>
-%token </td>
-%token <caption>
-%token </caption>
-%token <thead>
-%token </thead>
-%token <tfoot>
-%token </tfoot>
-%token <tbody>
-%token </tbody>
-%token <a>
-%token </a>
-%token '>'
 
 %start sigma
-%%
-/*Reglas gramaticales*/
-
-          sigma: <!DOCTYPE html>INICIO {return 0;}
-
-          ;
-
-          INICIO: <html> IDIOMA  ENCABEZADO CUERPO </html>;
-
-          IDIOMA: lang=" INGRESO ";
-
-          INGRESO: <TEXTO>
-                |  <URL>
-                |  <NUMERO>
-                |  ENFATIZADORES
-          ;
-
-          ENCABEZADO: <head> CONTCABEZADO TITULO </head>;
-
-          CONTCABEZADO: <meta charset= "UTF-8"><METACONT>;
-
-          METACONT: <meta name= "description" content= "INGRESO">
-                |   <meta name= "keywords" content= "INGRESO">
-                |   <meta name= "author" content= "INGRESO">
-          ;
-
-          TITULO: <title> INGRESO </title>;
-
-/*CUERPO*/
-/*Etiquetas de parrafo*/
-
-          BODY: <body> CUERPO </body> ;
-
-          CUERPO: SECTION
-                | DIVISION
-                | FUNCION
-          ;
-
-          SECTION: <section> DIVISION </section>
-                |  <section> INGRESO </section>
-          ;
-
-          FUNCION: PARRAFO
-                |  ENCABEZADO
-                |  mark
-                |  ENLACES
-                |  IMAGEN
-                |  INGRESO
-                |  CUERPO
-                |  ENLACES
-                |  LISTA
-                |  TABLA
-          ;
-
-          PARRAFO: <p> INGRESO </p>
-                |  <p> SELECTOR </p>
-          ;
-
-          ENFATIZADORES: <em> INGRESO </em>
-                |  <strong> INGRESO </strong>
-                |  <mark> INGRESO </mark>
-          ;
-
-          ENCABEZADO: <h1> INGRESO </h1>
-                |  <h2> INGRESO </h2>
-                |  <h3> INGRESO </h3>
-                |  <h4> INGRESO </h4>
-                |  <h5> INGRESO </h5>
-                |  <h6> INGRESO </h6>
-          ;
-
-          SELECTOR: class= " INGRESO "
-                |id= " INGRESO "
-          ;
-
-/*Listas*/
-
-          LISTAS: <ol> LISTAS </ol>
-                | <ol> INGRESO </ol>
-                | <ol> TYPE </ol>
-                | <ol> TYPE INGRESO </ol>
-                | <ol> TYPE INGRESO LISTAS </ol>
-                | <li> LISTAS </li>
-                | <li> INGRESO </li>
-                | <li> VALUE </li>
-                | <li> VALUE INGRESO </li>
-                | <li> VALUE INGRESO LISTAS </li>
-                | <ul> LISTAS </ul>
-                | <ul> INGRESO </ul>
-                | <ul> INGRESO LISTAS </ul>
-          ;
-
-          TYPE: INGRESO
-                | Nro
-                | ROMAN
-                | roman
-          ;
-
-          VALUE: int;
-
-/*Tablas*/
-
-          TABLE:  <table ATR> TABLA </table>
-                | <table> TABLA </table>
-          ;
-
-          ATR: TEXTO;
-
-          TABLA:  TR
-                | THEAD TFOOT TBODY
-                | CAPTION TR
-                | CAPTION THEAD TFOOT TBODY
-          ;
-
-          TR: <tr> ELEMENT </tr>;
-
-          ELEMENT: TH
-                |  TD
-          ;
-
-          TH:     <th> FUNCION </th> ELEMENT
-                | <th> FUNCION </th>
-          ;
-
-          TD:     <td>FUNCION</td>
-                | <td>FUNCION</td> TD
-          ;
-
-          THEAD: <thead> TR </thead> ;
-
-          TFOOT: <tfoot> TR </tfoot> ;
-
-          TBODY: <tbody> TR </tbody> ;
-
-/*ENLACES*/
-
-          PROTOCOLO: http://DOMINIO
-                |  https://DOMINIO
-                |  ftp://DOMINIO
-                |  ftps://DOMINIO
-          ;
-
-          DOMINIO: TEXTO :
-                |  TEXTO : PUERTO
-                |  TEXTO : RUTA
-                |  TEXTO : LOCALIZADORINT
-          ;
-
-          PUERTO: TEXTO /
-                |  TEXTO / RUTA
-                |  TEXTO / LOCALIZADORINT
-          ;
-
-          RUTA: TEXTO #
-                |  TEXTO # LOCALIZADORINT
-          ;
-
-          LOCALIZADORINT: TEXTO;
-
-/*Imagen*/
-
-          IMAGEN:  <img src= “TEXTO/TEXTO”>
-                |  <img src= TEXTO alt= “TEXTO DATO”>
-          ;
-
-          DATO: width=”NRO” heigth= “NRO”
 
 %%
 
-/*CODIGO USUARIO*/
+sigma: EXC DOCTYPE HTML inicio
+
+;
+
+inicio: LA HTML LC encabezado cuerpo LA  SLASH  HTML LC
+      | LA HTML LANG IGUAL {idioma} LC encabezado estcuerpo LA  SLASH  HTML LC
+;
+
+encabezado: LA HEAD LC contcabezado titulo LA  SLASH  HEAD LC
+;
+
+contcabezado: META CHARSET IGUAL UTF metacont
+;
+
+metacont: META NAME IGUAL COMILLAS DESCRIPTION COMILLAS CONTENT IGUAL {entrada}
+      |   META NAME IGUAL COMILLAS KEYWORDS COMILLAS CONTENT IGUAL COMILLAS {entrada} COMILLAS
+      |   META NAME IGUAL COMILLAS AUTHOR COMILLAS CONTENT IGUAL {entrada}
+;
+
+titulo: LA TITLE LC {entrada} LA  SLASH  TITLE LC
+;
+
+estcuerpo: LA BODY LC cuerpo LA  SLASH  BODY LC
+;
+
+cuerpo: seccion
+      | division
+      | funcion
+;
+
+seccion: LA SECTION LC division LA  SLASH  SECTION LC
+      |  LA SECTION LC {entrada} LA  SLASH  SECTION LC
+;
+
+division: LA DIV LC funcion LA SLASH DIV LC
+;
+
+funcion: parrafo
+      |  encabezado
+      |  enlaces
+      |  imagen
+      |  ingreso
+      |  cuerpo
+      |  enlaces
+      |  listas
+      |  tabla
+;
+ingreso: {entrada}
+      | enfatizadores
+
+
+
+;
+parrafo: LA P LC {entrada} LA  SLASH P LC
+      |  LA P LC selector LA  SLASH P LC
+;
+
+enfatizadores : LA EM LC ingreso LA  SLASH  EM LC
+      |  LA STRONG LC ingreso LA  SLASH  STRONG LC
+      |  LA MARK LC ingreso LA  SLASH  MARK LC
+;
+
+encabezado : LA H1 LC {entrada} LA  SLASH  H1 LC
+      |  LA H2 LC {entrada} LA  SLASH  H2 LC
+      |  LA H3 LC {entrada} LA  SLASH  H3 LC
+      |  LA H4 LC {entrada} LA  SLASH  H4 LC
+      |  LA H5 LC {entrada} LA  SLASH  H5 LC
+      |  LA H6 LC {entrada} LA  SLASH  H6 LC
+;
+
+selector : CLASS IGUAL COMILLAS {entrada} COMILLAS
+      |ID IGUAL COMILLAS {entrada} COMILLAS
+;
+
+listas : LA OL LC listas LA  SLASH  OL LC
+      | LA OL LC ingreso LA  SLASH  OL LC
+      | LA OL LC type LA  SLASH  OL LC
+      | LA OL LC type ingreso LA  SLASH  OL LC
+      | LA OL LC type ingreso listas LA  SLASH  OL LC
+      | LA LI LC listas LA  SLASH  LI LC
+      | LA LI LC ingreso LA  SLASH  LI LC
+      | LA LI LC {int} LA  SLASH  LI LC
+      | LA LI LC {int} ingreso LA  SLASH  LI LC
+      | LA LI LC {int} ingreso listas LA  SLASH  LI LC
+      | LA UL LC listas LA  SLASH  UL LC
+      | LA UL LC ingreso LA  SLASH  UL LC
+      | LA UL LC ingreso listas LA  SLASH  UL LC
+;
+
+type : ingreso
+      | {int}
+;
+
+table : LA TABLE LC atr tabla LA  SLASH  TABLE LC
+      | LA TABLE LC tabla LA  SLASH  TABLE LC
+;
+
+atr : {entrada};
+
+tabla :  ttr
+      | tcabeza tpie tcuerpo
+;
+
+ttr : LA TR LC element LA  SLASH  TR LC
+;
+
+element : tth
+      |  ttd
+;
+
+tth: LA TH LC funcion LA  SLASH  TH element
+      | LA TH LC funcion LA  SLASH  TH LC
+;
+
+ttd : LA TD LC funcion LA  SLASH  TD LC
+      |LA TD LC funcion SLASH TD LC
+;
+
+tcabeza : LA THEAD LC ttr LA SLASH THEAD LC
+;
+
+tpie : LA TFOOT LC ttr LA SLASH TFOOT LC
+;
+
+tcuerpo: LA TBODY LC ttr LA SLASH TBODY LC
+;
+
+enlaces: protocolo
+;
+
+protocolo : HTTP DP SLASH  SLASH dominio
+      |  HTPS DP SLASH  SLASH dominio
+      |  FTP DP SLASH  SLASH dominio
+      |  FTPS DP SLASH  SLASH dominio
+;
+
+dominio : {entrada} DP
+      |  {entrada} DP puerto
+      |  {entrada} DP ruta
+      |  {entrada} DP localizadorint
+;
+
+puerto : {entrada} SLASH
+      |  {entrada}  SLASH  ruta
+      |  {entrada}  SLASH  localizadorint
+;
+
+ruta : {entrada} HASH
+      |  {entrada} HASH localizadorint
+;
+
+localizadorint : {entrada}
+;
+
+imagen : JPG SOURCE IGUAL COMILLAS {entrada} SLASH {entrada} COMILLAS
+      |  JPG SOURCE IGUAL {entrada} ALTE IGUAL COMILLAS {entrada} dato COMILLAS
+;
+
+dato : ANCHO IGUAL COMILLAS {int} COMILLAS ALTO IGUAL COMILLAS {int} COMILLAS
+;
+
+%%
 
 void  yyerror(char *s)
 {
 	printf ("\nError sintactico en la linea: %d\n",cont);
 }
 
-int main (int argc, char *argv[])
+int main()
 {
-    if (argc == 2)
-    {
-    	yyin = fopen (argv[1], "rt");
-    	if (yyin == NULL)
-    	{
-    		printf ("El archivo %s no se puede abrir\n", argv[1]);
-    		exit (-1);
-    	}
-    }
-    else
-    {
-        printf("|----------------------------------------------------------|\n");
-        printf("|       Analizador Sintactico y lexico   v0.01             |\n");
-        printf("|----------------------------------------------------------|\n\n\n");
-        printf("Seleccione como desea cargar su codigo a ser analizado:\n");
-        printf("     (1) Desde la terminal\n");
-        printf("     (2) Desde un archivo externo\n\n");
-        printf("Ud ha seleccionado: ");
-        char opc;
-        scanf ("%c",&opc);
-        switch (opc){
-            case '1':
-            {
-                printf("\nIngrese el codigo por teclado:\n\n");
-                yyin=stdin;
-                    if (!yyparse())
-    				{
-    					printf ("|----------------------------------------------------------|\n");
-    					printf ("|                                                          |\n");
-                        		printf ("|          El analisis se completo sin errores             |\n");
-		   			printf ("|                                                          |\n");
-		   			printf ("|----------------------------------------------------------|\n");
-						getch();
-					}
-
-    				else
-     				{
-     					printf("\nSu codigo posee un error en la linea: %i\n",yylineno-1);
-	 				}
-
-                break;
-            }
-            case '2':
-            {
-
-                 printf("Ingrese el nombre o ruta del archivo para su analisis: \n");
-                 char nombrearchivo[200];
-                 scanf ("%s",nombrearchivo);
-                 printf("\n\n");
-                 yyin=fopen(nombrearchivo,"rt");
-                 if (yyin == NULL)
-             	{
-             		printf ("El archivo %s no se puede abrir\n", nombrearchivo);
-             		printf ("Vuelva mas tarde\n", nombrearchivo);
-             		printf ("BUEN DIA\n",nombrearchivo);
-             		exit (-1);
-             	}
-             	    if (!yyparse())
-    			{
-    			printf ("|----------------------------------------------------------|\n");
-                        printf ("|                                                          |\n");
-                        printf ("|          El analisis se completo sin errores             |\n");
-                        printf ("|                                                          |\n");
-                        printf ("|----------------------------------------------------------|\n");
-						getch();
-				}
-
-    				else
-     			{
-     					printf("\nSu codigo posee un error en la linea: %i\n",yylineno);
-	 			}
-
-            break;
-            }
-            default: return 0;
-        }
-
-    }
-    getch();
-
-    return 0;
-  }
+  yyparse();
+printf("funciona");
+getchar();
+return 0;
+}
